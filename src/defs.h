@@ -60,9 +60,9 @@
 /*  SETBIT sets the n-th bit starting from r		*/
 
 #define	MAXCHAR		255
-#define	MAXSHORT	32767
-#define MINSHORT	-32768
-#define MAXTABLE	32500
+#define	MAXSHORT	2147483647
+#define MINSHORT	-2147483647 - 1
+#define MAXTABLE	2147483647
 #define BITS_PER_WORD	32
 #define	WORDSIZE(n)	(((n)+(BITS_PER_WORD-1))/BITS_PER_WORD)
 #define	BIT(r, n)	((((r)[(n)>>5])>>((n)&31))&1)

@@ -43,17 +43,17 @@ static char sccsid[] = "@(#)output.c	5.7 (Berkeley) 5/24/93";
 
 static int nvectors;
 static int nentries;
-static short **froms;
-static short **tos;
-static short *tally;
-static short *width;
-static short *state_count;
-static short *order;
-static short *base;
-static short *pos;
+static int **froms;
+static int **tos;
+static int *tally;
+static int *width;
+static int *state_count;
+static int *order;
+static int *base;
+static int *pos;
 static int maxtable;
-static short *table;
-static short *check;
+static int *table;
+static int *check;
 static int lowzero;
 static int high;
 
@@ -105,10 +105,10 @@ void token_actions() {
     register int i, j;
     register int shiftcount, reducecount;
     register int max, min;
-    register short *actionrow, *r, *s;
+    register int *actionrow, *r, *s;
     register action *p;
 
-    actionrow = NEW2(2*ntokens, short);
+    actionrow = NEW2(2*ntokens, int);
     for (i = 0; i < nstates; ++i)
     {
 	if (parser[i])
@@ -141,8 +141,8 @@ void token_actions() {
 	    width[nstates+i] = 0;
 	    if (shiftcount > 0)
 	    {
-		froms[i] = r = NEW2(shiftcount, short);
-		tos[i] = s = NEW2(shiftcount, short);
+		froms[i] = r = NEW2(shiftcount, int);
+		tos[i] = s = NEW2(shiftcount, int);
 		min = MAXSHORT;
 		max = 0;
 		for (j = 0; j < ntokens; ++j)
@@ -161,8 +161,8 @@ void token_actions() {
 	    }
 	    if (reducecount > 0)
 	    {
-		froms[nstates+i] = r = NEW2(reducecount, short);
-		tos[nstates+i] = s = NEW2(reducecount, short);
+		froms[nstates+i] = r = NEW2(reducecount, int);
+		tos[nstates+i] = s = NEW2(reducecount, int);
 		min = MAXSHORT;
 		max = 0;
 		for (j = 0; j < ntokens; ++j)
@@ -188,9 +188,9 @@ void save_column(int symbol, int default_state) {
     register int i;
     register int m;
     register int n;
-    register short *sp;
-    register short *sp1;
-    register short *sp2;
+    register int *sp;
+    register int *sp1;
+    register int *sp2;
     register int count;
     register int symno;
 
@@ -207,8 +207,8 @@ void save_column(int symbol, int default_state) {
 
     symno = symbol_value[symbol] + 2*nstates;
 
-    froms[symno] = sp1 = sp = NEW2(count, short);
-    tos[symno] = sp2 = NEW2(count, short);
+    froms[symno] = sp1 = sp = NEW2(count, int);
+    tos[symno] = sp2 = NEW2(count, int);
 
     for (i = m; i < n; i++)
     {
@@ -227,7 +227,7 @@ void save_column(int symbol, int default_state) {
 void goto_actions (const char * prefix) {
     register int i, j, k;
 
-    state_count = NEW2(nstates, short);
+    state_count = NEW2(nstates, int);
 
     k = default_goto(start_symbol + 1);
 
@@ -253,7 +253,7 @@ void sort_actions() {
   register int t;
   register int w;
 
-  order = NEW2(nvectors, short);
+  order = NEW2(nvectors, int);
   nentries = 0;
 
   for (i = 0; i < nvectors; i++)
@@ -285,12 +285,12 @@ void pack_table() {
     register int place;
     register int state;
 
-    base = NEW2(nvectors, short);
-    pos = NEW2(nentries, short);
+    base = NEW2(nvectors, int);
+    pos = NEW2(nentries, int);
 
     maxtable = 1000;
-    table = NEW2(maxtable, short);
-    check = NEW2(maxtable, short);
+    table = NEW2(maxtable, int);
+    check = NEW2(maxtable, int);
 
     lowzero = 0;
     high = 0;
@@ -328,10 +328,10 @@ void pack_table() {
 void output_yyDgoto (const char * prefix) {
     nvectors = 2*nstates + nvars;
 
-    froms = NEW2(nvectors, short *);
-    tos = NEW2(nvectors, short *);
-    tally = NEW2(nvectors, short);
-    width = NEW2(nvectors, short);
+    froms = NEW2(nvectors, int *);
+    tos = NEW2(nvectors, int *);
+    tally = NEW2(nvectors, int);
+    width = NEW2(nvectors, int);
 
     token_actions();
     FREE(lookaheads);
@@ -444,8 +444,8 @@ int pack_vector(int vector) {
     register int t;
     register int loc;
     register int ok;
-    register short *from;
-    register short *to;
+    register int *from;
+    register int *to;
     int newmax;
 
     i = order[vector];
@@ -474,9 +474,9 @@ int pack_vector(int vector) {
 
 		newmax = maxtable;
 		do { newmax += 200; } while (newmax <= loc);
-		table = (short *) REALLOC(table, newmax*sizeof(short));
+		table = (int *) REALLOC(table, newmax*sizeof(int));
 		if (table == 0) no_space();
-		check = (short *) REALLOC(check, newmax*sizeof(short));
+		check = (int *) REALLOC(check, newmax*sizeof(int));
 		if (check == 0) no_space();
 		for (l  = maxtable; l < newmax; ++l)
 		{
