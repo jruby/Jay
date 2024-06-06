@@ -40,8 +40,8 @@ static char sccsid[] = "@(#)closure.c	5.3 (Berkeley) 5/24/93";
 
 #include "defs.h"
 
-short *itemset;
-short *itemsetend;
+int *itemset;
+int *itemsetend;
 unsigned *ruleset;
 
 static unsigned *first_derives;
@@ -51,7 +51,7 @@ static unsigned *EFF;
 void set_EFF() {
     register unsigned *row;
     register int symbol;
-    register short *sp;
+    register int *sp;
     register int rowsize;
     register int i;
     register int rule;
@@ -89,7 +89,7 @@ void set_first_derives() {
     register int j;
     register unsigned k;
     register unsigned cword;
-    register short *rp;
+    register int *rp;
 
     int rule;
     int i;
@@ -137,16 +137,16 @@ void set_first_derives() {
 }
 
 
-void closure(short* nucleus, int n) {
+void closure(int* nucleus, int n) {
     register int ruleno;
     register unsigned word;
     register unsigned i;
-    register short *csp;
+    register int *csp;
     register unsigned *dsp;
     register unsigned *rsp;
     register int rulesetsize;
 
-    short *csend;
+    int *csend;
     unsigned *rsend;
     int symbol;
     int itemno;
@@ -214,7 +214,7 @@ void finalize_closure() {
 #ifdef	DEBUG
 
 void print_closure(int n) {
-  register short *isp;
+  register int *isp;
 
   printf("\n\nn = %d\n\n", n);
   for (isp = itemset; isp < itemsetend; isp++)

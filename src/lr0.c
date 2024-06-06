@@ -40,8 +40,8 @@ static char sccsid[] = "@(#)lr0.c	5.3 (Berkeley) 1/20/91";
 
 #include "defs.h"
 
-extern short *itemset;
-extern short *itemsetend;
+extern int *itemset;
+extern int *itemsetend;
 extern unsigned *ruleset;
 
 int nstates;
@@ -59,27 +59,27 @@ static shifts *last_shift;
 static reductions *last_reduction;
 
 static int nshifts;
-static short *shift_symbol;
+static int *shift_symbol;
 
-static short *redset;
-static short *shiftset;
+static int *redset;
+static int *shiftset;
 
-static short **kernel_base;
-static short **kernel_end;
-static short *kernel_items;
+static int **kernel_base;
+static int **kernel_end;
+static int *kernel_items;
 
 
 void allocate_itemsets() {
-    register short *itemp;
-    register short *item_end;
+    register int *itemp;
+    register int *item_end;
     register int symbol;
     register int i;
     register int count;
     register int max;
-    register short *symbol_count;
+    register int *symbol_count;
 
     count = 0;
-    symbol_count = NEW2(nsyms, short);
+    symbol_count = NEW2(nsyms, int);
 
     item_end = ritem + nitems;
     for (itemp = ritem; itemp < item_end; itemp++)
@@ -92,8 +92,8 @@ void allocate_itemsets() {
 	}
     }
 
-    kernel_base = NEW2(nsyms, short *);
-    kernel_items = NEW2(count, short);
+    kernel_base = NEW2(nsyms, int *);
+    kernel_items = NEW2(count, int);
 
     count = 0;
     max = 0;
@@ -106,14 +106,14 @@ void allocate_itemsets() {
     }
 
     shift_symbol = symbol_count;
-    kernel_end = NEW2(nsyms, short *);
+    kernel_end = NEW2(nsyms, int *);
 }
 
 
 void allocate_storage() {
     allocate_itemsets();
-    shiftset = NEW2(nsyms, short);
-    redset = NEW2(nrules + 1, short);
+    shiftset = NEW2(nsyms, int);
+    redset = NEW2(nrules + 1, int);
     state_set = NEW2(nitems, core *);
 }
 
@@ -160,7 +160,7 @@ void free_storage() {
 
 void generate_states() {
     allocate_storage();
-    itemset = NEW2(nitems, short);
+    itemset = NEW2(nitems, int);
     ruleset = NEW2(WORDSIZE(nrules), unsigned);
     set_first_derives();
     initialize_states();
@@ -186,9 +186,9 @@ void generate_states() {
 
 int get_state(int symbol) {
     register int key;
-    register short *isp1;
-    register short *isp2;
-    register short *iend;
+    register int *isp1;
+    register int *isp2;
+    register int *iend;
     register core *sp;
     register int found;
     register int n;
@@ -248,14 +248,14 @@ int get_state(int symbol) {
 
 void initialize_states() {
     register int i;
-    register short *start_derives;
+    register int *start_derives;
     register core *p;
 
     start_derives = derives[start_symbol];
     for (i = 0; start_derives[i] >= 0; ++i)
 	continue;
 
-    p = (core *) MALLOC(sizeof(core) + i*sizeof(short));
+    p = (core *) MALLOC(sizeof(core) + i*sizeof(int));
     if (p == 0) no_space();
 
     p->next = 0;
@@ -275,8 +275,8 @@ void initialize_states() {
 void new_itemsets() {
     register int i;
     register int shiftcount;
-    register short *isp;
-    register short *ksp;
+    register int *isp;
+    register int *ksp;
     register int symbol;
 
     for (i = 0; i < nsyms; i++)
@@ -310,22 +310,22 @@ void new_itemsets() {
 core *new_state(int symbol) {
     register int n;
     register core *p;
-    register short *isp1;
-    register short *isp2;
-    register short *iend;
+    register int *isp1;
+    register int *isp2;
+    register int *iend;
 
 #ifdef	TRACE
     fprintf(stderr, "Entering new_state(%d)\n", symbol);
 #endif
 
-    if (nstates >= MAXSHORT)
+    if (nstates >= MAXINT)
 	fatal("too many states");
 
     isp1 = kernel_base[symbol];
     iend = kernel_end[symbol];
     n = iend - isp1;
 
-    p = (core *) allocate((unsigned) (sizeof(core) + (n - 1) * sizeof(short)));
+    p = (core *) allocate((unsigned) (sizeof(core) + (n - 1) * sizeof(int)));
     p->accessing_symbol = symbol;
     p->number = nstates;
     p->nitems = n;
@@ -417,12 +417,12 @@ void show_shifts() {
 
 void save_shifts() {
     register shifts *p;
-    register short *sp1;
-    register short *sp2;
-    register short *send;
+    register int *sp1;
+    register int *sp2;
+    register int *send;
 
     p = (shifts *) allocate((unsigned) (sizeof(shifts) +
-			(nshifts - 1) * sizeof(short)));
+			(nshifts - 1) * sizeof(int)));
 
     p->number = this_state->number;
     p->nshifts = nshifts;
@@ -449,13 +449,13 @@ void save_shifts() {
 
 
 void save_reductions() {
-    register short *isp;
-    register short *rp1;
-    register short *rp2;
+    register int *isp;
+    register int *rp1;
+    register int *rp2;
     register int item;
     register int count;
     register reductions *p;
-    register short *rend;
+    register int *rend;
 
     count = 0;
     for (isp = itemset; isp < itemsetend; isp++)
@@ -470,7 +470,7 @@ void save_reductions() {
     if (count)
     {
 	p = (reductions *) allocate((unsigned) (sizeof(reductions) +
-					(count - 1) * sizeof(short)));
+					(count - 1) * sizeof(int)));
 
 	p->number = this_state->number;
 	p->nreds = count;
@@ -499,10 +499,10 @@ void save_reductions() {
 void set_derives() {
     register int i, k;
     register int lhs;
-    register short *rules;
+    register int *rules;
 
-    derives = NEW2(nsyms, short *);
-    rules = NEW2(nvars + nrules, short);
+    derives = NEW2(nsyms, int *);
+    rules = NEW2(nvars + nrules, int);
 
     k = 0;
     for (lhs = start_symbol; lhs < nsyms; lhs++)
@@ -533,7 +533,7 @@ void free_derives() {
 #ifdef	DEBUG
 void print_derives() {
     register int i;
-    register short *sp;
+    register int *sp;
 
     printf("\nDERIVES\n\n");
 

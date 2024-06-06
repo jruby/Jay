@@ -40,11 +40,11 @@ static char sccsid[] = "@(#)verbose.c	5.3 (Berkeley) 1/20/91";
 
 #include "defs.h"
 
-static short *null_rules;
+static int *null_rules;
 
 void log_unused() {
     register int i;
-    register short *p;
+    register int *p;
 
     fprintf(verbose_file, "\n\nRules never reduced:\n");
     for (i = 3; i < nrules; ++i)
@@ -136,8 +136,8 @@ void print_core(int state) {
     register int k;
     register int rule;
     register core *statep;
-    register short *sp;
-    register short *sp1;
+    register int *sp;
+    register int *sp1;
 
     statep = state_table[state];
     k = statep->nitems;
@@ -170,7 +170,7 @@ void print_core(int state) {
 void print_gotos(int stateno) {
     register int i, k;
     register int as;
-    register short *to_state;
+    register int *to_state;
     register shifts *sp;
 
     putc('\n', verbose_file);
@@ -327,7 +327,7 @@ void verbose() {
 
     if (!vflag) return;
 
-    null_rules = (short *) MALLOC(nrules*sizeof(short));
+    null_rules = (int *) MALLOC(nrules*sizeof(int));
     if (null_rules == 0) no_space();
     fprintf(verbose_file, "\f\n");
     for (i = 0; i < nstates; i++)

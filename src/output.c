@@ -143,7 +143,7 @@ void token_actions() {
 	    {
 		froms[i] = r = NEW2(shiftcount, int);
 		tos[i] = s = NEW2(shiftcount, int);
-		min = MAXSHORT;
+		min = MAXINT;
 		max = 0;
 		for (j = 0; j < ntokens; ++j)
 		{
@@ -163,7 +163,7 @@ void token_actions() {
 	    {
 		froms[nstates+i] = r = NEW2(reducecount, int);
 		tos[nstates+i] = s = NEW2(reducecount, int);
-		min = MAXSHORT;
+		min = MAXINT;
 		max = 0;
 		for (j = 0; j < ntokens; ++j)
 		{

@@ -821,7 +821,7 @@ void initialize_grammar() {
     plhs[0] = 0;
     plhs[1] = 0;
     plhs[2] = 0;
-    rprec = (short *) MALLOC(maxrules*sizeof(short));
+    rprec = (int *) MALLOC(maxrules*sizeof(int));
     if (rprec == 0) no_space();
     rprec[0] = 0;
     rprec[1] = 0;
@@ -845,7 +845,7 @@ void expand_rules() {
     maxrules += 100;
     plhs = (bucket **) REALLOC(plhs, maxrules*sizeof(bucket *));
     if (plhs == 0) no_space();
-    rprec = (short *) REALLOC(rprec, maxrules*sizeof(short));
+    rprec = (int *) REALLOC(rprec, maxrules*sizeof(int));
     if (rprec == 0) no_space();
     rassoc = (char *) REALLOC(rassoc, maxrules*sizeof(char));
     if (rassoc == 0) no_space();
@@ -1361,9 +1361,9 @@ void pack_symbols() {
 
     symbol_name = (char **) MALLOC(nsyms*sizeof(char *));
     if (symbol_name == 0) no_space();
-    symbol_value = (short *) MALLOC(nsyms*sizeof(short));
+    symbol_value = (int *) MALLOC(nsyms*sizeof(int));
     if (symbol_value == 0) no_space();
-    symbol_prec = (short *) MALLOC(nsyms*sizeof(short));
+    symbol_prec = (int *) MALLOC(nsyms*sizeof(int));
     if (symbol_prec == 0) no_space();
     symbol_assoc = MALLOC(nsyms);
     if (symbol_assoc == 0) no_space();
@@ -1471,13 +1471,13 @@ void pack_grammar() {
     register int i, j;
     int assoc, prec;
 
-    ritem = (short *) MALLOC(nitems*sizeof(short));
+    ritem = (int *) MALLOC(nitems*sizeof(int));
     if (ritem == 0) no_space();
-    rlhs = (short *) MALLOC(nrules*sizeof(short));
+    rlhs = (int *) MALLOC(nrules*sizeof(int));
     if (rlhs == 0) no_space();
-    rrhs = (short *) MALLOC((nrules+1)*sizeof(short));
+    rrhs = (int *) MALLOC((nrules+1)*sizeof(int));
     if (rrhs == 0) no_space();
-    rprec = (short *) REALLOC(rprec, nrules*sizeof(short));
+    rprec = (int *) REALLOC(rprec, nrules*sizeof(int));
     if (rprec == 0) no_space();
     rassoc = REALLOC(rassoc, nrules);
     if (rassoc == 0) no_space();

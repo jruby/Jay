@@ -78,16 +78,16 @@ int nvars;
 
 int   start_symbol;
 char  **symbol_name;
-short *symbol_value;
-short *symbol_prec;
+int *symbol_value;
+int *symbol_prec;
 char  *symbol_assoc;
 
-short *ritem;
-short *rlhs;
-short *rrhs;
-short *rprec;
+int *ritem;
+int *rlhs;
+int *rrhs;
+int *rprec;
 char  *rassoc;
-short **derives;
+int **derives;
 char *nullable;
 
 extern char *mktemp();

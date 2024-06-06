@@ -43,12 +43,12 @@ static char sccsid[] = "@(#)mkpar.c	5.3 (Berkeley) 1/20/91";
 action **parser;
 int SRtotal;
 int RRtotal;
-short *SRconflicts;
-short *RRconflicts;
-short *defred;
-short *rules_used;
-short nunused;
-short final_state;
+int *SRconflicts;
+int *RRconflicts;
+int *defred;
+int *rules_used;
+int nunused;
+int final_state;
 
 static int SRcount;
 static int RRcount;
@@ -86,7 +86,7 @@ action* parse_actions(int stateno) {
 action* get_shifts(int stateno) {
     register action *actions, *temp;
     register shifts *sp;
-    register short *to_state;
+    register int *to_state;
     register int i, k;
     register int symbol;
 
@@ -176,7 +176,7 @@ action* add_reduce(action* actions, int ruleno, int symbol) {
 
 void find_final_state() {
     register int goal, i;
-    register short *to_state;
+    register int *to_state;
     register shifts *p;
 
     p = shift_table[0];
@@ -194,7 +194,7 @@ void unused_rules() {
     register int i;
     register action *p;
 
-    rules_used = (short *) MALLOC(nrules*sizeof(short));
+    rules_used = (int *) MALLOC(nrules*sizeof(int));
     if (rules_used == 0) no_space();
 
     for (i = 0; i < nrules; ++i)
@@ -230,8 +230,8 @@ void remove_conflicts() {
 
     SRtotal = 0;
     RRtotal = 0;
-    SRconflicts = NEW2(nstates, short);
-    RRconflicts = NEW2(nstates, short);
+    SRconflicts = NEW2(nstates, int);
+    RRconflicts = NEW2(nstates, int);
     for (i = 0; i < nstates; i++)
     {
 	SRcount = 0;
@@ -345,7 +345,7 @@ int sole_reduction(int stateno) {
 void defreds() {
     register int i;
 
-    defred = NEW2(nstates, short);
+    defred = NEW2(nstates, int);
     for (i = 0; i < nstates; i++)
 	defred[i] = sole_reduction(i);
 }

@@ -49,8 +49,8 @@
 /*  they might have to be changed for other machines	*/
 
 /*  MAXCHAR is the largest unsigned character value	*/
-/*  MAXSHORT is the largest value of a C short		*/
-/*  MINSHORT is the most negative value of a C short	*/
+/*  MAXINT is the largest value of a C int		*/
+/*  MININT is the most negative value of a C int	*/
 /*  MAXTABLE is the maximum table size			*/
 /*  BITS_PER_WORD is the number of bits in a C unsigned	*/
 /*  WORDSIZE computes the number of words needed to	*/
@@ -60,8 +60,8 @@
 /*  SETBIT sets the n-th bit starting from r		*/
 
 #define	MAXCHAR		255
-#define	MAXSHORT	2147483647
-#define MINSHORT	-2147483647 - 1
+#define	MAXINT	2147483647
+#define MININT	-2147483647 - 1
 #define MAXTABLE	2147483647
 #define BITS_PER_WORD	32
 #define	WORDSIZE(n)	(((n)+(BITS_PER_WORD-1))/BITS_PER_WORD)
@@ -154,9 +154,9 @@ struct bucket
     struct bucket *next;
     char *name;
     char *tag;
-    short value;
-    short index;
-    short prec;
+    int value;
+    int index;
+    int prec;
     char class;
     char assoc;
 };
@@ -169,10 +169,10 @@ struct core
 {
     struct core *next;
     struct core *link;
-    short number;
-    short accessing_symbol;
-    short nitems;
-    short items[1];
+    int number;
+    int accessing_symbol;
+    int nitems;
+    int items[1];
 };
 
 
@@ -182,9 +182,9 @@ typedef struct shifts shifts;
 struct shifts
 {
     struct shifts *next;
-    short number;
-    short nshifts;
-    short shift[1];
+    int number;
+    int nshifts;
+    int shift[1];
 };
 
 
@@ -194,9 +194,9 @@ typedef struct reductions reductions;
 struct reductions
 {
     struct reductions *next;
-    short number;
-    short nreds;
-    short rules[1];
+    int number;
+    int nreds;
+    int rules[1];
 };
 
 
@@ -206,9 +206,9 @@ typedef struct action action;
 struct action
 {
     struct action *next;
-    short symbol;
-    short number;
-    short prec;
+    int symbol;
+    int number;
+    int prec;
     char action_code;
     char assoc;
     char suppressed;
@@ -249,17 +249,17 @@ extern char *line_format;
 
 extern int   start_symbol;
 extern char  **symbol_name;
-extern short *symbol_value;
-extern short *symbol_prec;
+extern int *symbol_value;
+extern int *symbol_prec;
 extern char  *symbol_assoc;
 
-extern short *ritem;
-extern short *rlhs;
-extern short *rrhs;
-extern short *rprec;
+extern int *ritem;
+extern int *rlhs;
+extern int *rrhs;
+extern int *rprec;
 extern char  *rassoc;
 
-extern short **derives;
+extern int **derives;
 extern char *nullable;
 
 extern bucket *first_symbol;
@@ -269,26 +269,26 @@ extern int nstates;
 extern core *first_state;
 extern shifts *first_shift;
 extern reductions *first_reduction;
-extern short *accessing_symbol;
+extern int *accessing_symbol;
 extern core **state_table;
 extern shifts **shift_table;
 extern reductions **reduction_table;
 extern unsigned *LA;
-extern short *LAruleno;
-extern short *lookaheads;
-extern short *goto_map;
-extern short *from_state;
-extern short *to_state;
+extern int *LAruleno;
+extern int *lookaheads;
+extern int *goto_map;
+extern int *from_state;
+extern int *to_state;
 
 extern action **parser;
 extern int SRtotal;
 extern int RRtotal;
-extern short *SRconflicts;
-extern short *RRconflicts;
-extern short *defred;
-extern short *rules_used;
-extern short nunused;
-extern short final_state;
+extern int *SRconflicts;
+extern int *RRconflicts;
+extern int *defred;
+extern int *rules_used;
+extern int nunused;
+extern int final_state;
 
 /* global functions */
 
@@ -381,7 +381,7 @@ void build_relations();
 void add_lookback_edge(int stateno, int ruleno, int gotono);
 void compute_FOLLOWS();
 void compute_lookaheads();
-void digraph(short **relation);
+void digraph(int **relation);
 void traverse(int i);
 
 /* from reader.c */
@@ -435,7 +435,7 @@ void lr0();
 /* from closure.c */
 void set_EFF();
 void set_first_derives();
-void closure(short* nucleus, int n);
+void closure(int* nucleus, int n);
 void finalize_closure();
 void print_closure(int n);
 void print_EFF();
